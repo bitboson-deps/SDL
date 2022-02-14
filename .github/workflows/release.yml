@@ -17,16 +17,6 @@ jobs:
       - run: mkdir -p ~/output/macos/x64
       - run: mkdir -p ~/output/macos/arm64
 
-      # Download the mac-os artifacts
-      - uses: actions/download-artifact@v2
-        with:
-          name: macos-x64
-          path: ~/outputs/macos/x64
-      - uses: actions/download-artifact@v2
-        with:
-          name: macos-arm64
-          path: ~/outputs/macos/arm64
-
       # Release the artifacts on GitHub
       - name: Create Release
         id: create_release
@@ -42,3 +32,35 @@ jobs:
             - TODO - Add website for documenting relevant changes
           draft: false
           prerelease: false
+
+      # Upload mac-os (x64) based artifacts to the release
+      - name: Download x64 MacOS Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: macos-x64
+          path: ~/outputs/macos/
+      - name: Upload MacOS (x64) Release Artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./outputs/libSDL2.darwin-x64.tar.gz
+          asset_name: libSDL2.darwin-x64.tar.gz
+          asset_content_type: application/gzip
+
+      # Upload mac-os (arm64) based artifacts to the release
+      - name: Download arm64 MacOS Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: macos-arm64
+          path: ~/outputs/macos/
+      - name: Upload MacOS (arm64) Release Artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./outputs/libSDL2.darwin-arm64.tar.gz
+          asset_name: libSDL2.darwin-arm64.tar.gz
+          asset_content_type: application/gzip
