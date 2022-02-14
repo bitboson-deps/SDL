@@ -1,0 +1,32 @@
+# Have the build run on every tag push
+name: Build (macos)
+on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+# Define the actual build job
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+
+      # Perform the build operation
+      - uses: actions/checkout@v2
+      - run: |
+          mkdir -p build-mac
+          cd build-mac/
+          CC=../build-scripts/clang-fat.sh ../configure
+          make
+
+      # Upload the build artifacts (x64)
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos-x64
+          path: ./build-mac/x64/build/.libs/libSDL*.dylib
+
+      # Upload the build artifacts (arm64)
+      - uses: actions/upload-artifact@v2
+        with:
+          name: macos-arm64
+          path: ./build-mac/arm64/build/.libs/libSDL*.dylib
