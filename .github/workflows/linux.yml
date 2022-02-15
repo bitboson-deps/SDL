@@ -1,6 +1,9 @@
 # Have the build run on every push
 name: Build (linux)
-on: [push]
+on:
+  push:
+    branches:
+      - 'higgs-boson'
 
 # Define the actual build job
 jobs:
