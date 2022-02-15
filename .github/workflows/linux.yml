@@ -22,13 +22,16 @@ jobs:
           cd ..
 
       # Zip/package the build artifacts
-      - name: Package SDL Library
+      - name: Package SDL (x86) Library
         run: |
-          tar -zcvf libSDL2.linux-x86.tar.gz ./build-linux/build/.libs/libSDL*.so ./build-linux/include
+          cp -r ./build-linux/include ./build-linux/build/.libs/
+          cd ./build-linux/build/.libs/
+          tar -zcvf libSDL2.linux-x86.tar.gz libSDL*.so libSDL*.so.* include/
+          cd ../../../
 
       # Upload the build artifacts (x86)
       - name: Upload SDL packaged Library (x86)
         uses: actions/upload-artifact@v2
         with:
           name: linux-x86
-          path: libSDL2.linux-x86.tar.gz
+          path: ./build-linux/build/.libs/libSDL2.linux-x86.tar.gz
