@@ -1,0 +1,42 @@
+# Have the build run on every push
+name: Build (macos)
+on: [push]
+
+# Define the actual build job
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Perform the build operation
+      - name: Build SDL Library
+        run: |
+          mkdir -p build-mac
+          cd build-mac/
+          CC=../build-scripts/clang-fat.sh ../configure
+          make
+          cd ..
+
+      # Zip/package the build artifacts
+      - name: Package SDL Library
+        run: |
+          tar -zcvf libSDL2.darwin-x64.tar.gz ./build-mac/x64/build/.libs/libSDL*.dylib ./build-mac/include
+          tar -zcvf libSDL2.darwin-arm64.tar.gz ./build-mac/arm64/build/.libs/libSDL*.dylib ./build-mac/include
+
+      # Upload the build artifacts (x64)
+      - name: Upload SDL packaged Library (x64)
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-x64
+          path: libSDL2.darwin-x64.tar.gz
+
+      # Upload the build artifacts (arm64)
+      - name: Upload SDL packaged Library (arm64)
+        uses: actions/upload-artifact@v2
+        with:
+          name: macos-arm64
+          path: libSDL2.darwin-arm64.tar.gz
