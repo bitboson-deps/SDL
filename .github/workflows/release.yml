@@ -8,8 +8,50 @@ on:
 # Define the actual build job
 # NOTE: We must run all builds first
 jobs:
+
+  #
+  # Handle all Linux Builds Here
+  #
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the repository
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      # Perform the build operation
+      - name: Build SDL Library
+        run: |
+          mkdir -p build-linux
+          cd build-linux/
+          ../configure
+          make
+          cd ..
+
+      # Zip/package the build artifacts
+      - name: Package SDL (x86) Library
+        run: |
+          cp -r ./build-linux/include ./build-linux/build/.libs/
+          cd ./build-linux/build/.libs/
+          tar -zcvf libSDL2.linux-x86.tar.gz libSDL*.so libSDL*.so.* include/
+          cd ../../../
+
+      # Upload the build artifacts (x86)
+      - name: Upload SDL packaged Library (x86)
+        uses: actions/upload-artifact@v2
+        with:
+          name: linux-x86
+          retention-days: 1
+          path: ./build-linux/build/.libs/libSDL2.linux-x86.tar.gz
+
+
+  #
+  # Handle Release Jobs Here
+  #
   release:
     runs-on: ubuntu-latest
+    needs: [build-linux]
     steps:
 
       # Ensure the output directories exist
