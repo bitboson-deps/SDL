@@ -54,12 +54,6 @@ jobs:
     needs: [build-linux]
     steps:
 
-      # Ensure the output directories exist
-      - name: Setup Output Directories
-        run: |
-            mkdir -p ~/output/linux
-            mkdir -p ~/output/macos
-
       # Release the artifacts on GitHub
       - name: Create Release
         id: create_release
@@ -67,11 +61,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.sha }}
+          release_name: Release ${{ github.sha }}
           body: |
             Changes in this Release
-            - Releasing artifacts for tag: ${{ github.ref }}
+            - Releasing artifacts for commit: ${{ github.sha }}
             - TODO - Add website for documenting relevant changes
           draft: false
           prerelease: false
@@ -81,13 +75,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: linux-x86
-          path: ~/outputs/linux/libSDL2.linux-x86.tar.gz
+          path: libSDL2.linux-x86.tar.gz
       - name: Upload Linux (x86) Release Artifacts
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ~/outputs/linux/libSDL2.linux-x86.tar.gz
+          asset_path: libSDL2.linux-x86.tar.gz
           asset_name: libSDL2.linux-x86.tar.gz
           asset_content_type: application/gzip
