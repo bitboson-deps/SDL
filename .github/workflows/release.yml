@@ -81,7 +81,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: linux-x86
-          path: ~/outputs/linux/
+          path: ~/outputs/linux/libSDL2.linux-x86.tar.gz
       - name: Upload Linux (x86) Release Artifacts
         uses: actions/upload-release-asset@v1
         env:
