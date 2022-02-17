@@ -54,6 +54,11 @@ jobs:
     needs: [build-linux]
     steps:
 
+      # Deduce the short hash value for the current commit
+      - name: Deduces the Short SHA/Hash for Commit
+        id: short_sha
+        run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+
       # Release the artifacts on GitHub
       - name: Create Release
         id: create_release
@@ -61,8 +66,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.sha }}
-          release_name: Release ${{ github.sha }}
+          tag_name: v${{ steps.today.outputs.date }}-${{ steps.short_sha.outputs.sha8 }}
+          release_name: Release v${{ steps.today.outputs.date }}-${{ steps.short_shagit .outputs.sha8 }}
           body: |
             Changes in this Release
             - Releasing artifacts for commit: ${{ github.sha }}
