@@ -60,8 +60,12 @@ static const Uint8 GLES2_Fragment_Solid[] = " \
 static const Uint8 GLES2_Fragment_TextureABGR[] = " \
     precision mediump float; \
     uniform sampler2D u_texture; \
-    varying vec4 v_color; \
-    varying vec2 v_texCoord; \
+    varying vec4 v_color;\n\
+    #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
+    varying highp vec2 v_texCoord;\n\
+    #else\n\
+    varying vec2 v_texCoord;\n\
+    #endif\n\
     \
     void main() \
     { \
@@ -74,8 +78,12 @@ static const Uint8 GLES2_Fragment_TextureABGR[] = " \
 static const Uint8 GLES2_Fragment_TextureARGB[] = " \
     precision mediump float; \
     uniform sampler2D u_texture; \
-    varying vec4 v_color; \
-    varying vec2 v_texCoord; \
+    varying vec4 v_color;\n\
+    #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
+    varying highp vec2 v_texCoord;\n\
+    #else\n\
+    varying vec2 v_texCoord;\n\
+    #endif\n\
     \
     void main() \
     { \
@@ -91,8 +99,12 @@ static const Uint8 GLES2_Fragment_TextureARGB[] = " \
 static const Uint8 GLES2_Fragment_TextureRGB[] = " \
     precision mediump float; \
     uniform sampler2D u_texture; \
-    varying vec4 v_color; \
-    varying vec2 v_texCoord; \
+    varying vec4 v_color;\n\
+    #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
+    varying highp vec2 v_texCoord;\n\
+    #else\n\
+    varying vec2 v_texCoord;\n\
+    #endif\n\
     \
     void main() \
     { \
@@ -109,8 +121,12 @@ static const Uint8 GLES2_Fragment_TextureRGB[] = " \
 static const Uint8 GLES2_Fragment_TextureBGR[] = " \
     precision mediump float; \
     uniform sampler2D u_texture; \
-    varying vec4 v_color; \
-    varying vec2 v_texCoord; \
+    varying vec4 v_color;\n\
+    #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
+    varying highp vec2 v_texCoord;\n\
+    #else\n\
+    varying vec2 v_texCoord;\n\
+    #endif\n\
     \
     void main() \
     { \
@@ -120,6 +136,8 @@ static const Uint8 GLES2_Fragment_TextureBGR[] = " \
         gl_FragColor *= v_color; \
     } \
 ";
+
+#if SDL_HAVE_YUV
 
 #define JPEG_SHADER_CONSTANTS                                   \
 "// YUV offset \n"                                              \
@@ -155,7 +173,11 @@ static const Uint8 GLES2_Fragment_TextureBGR[] = " \
 "uniform sampler2D u_texture_u;\n"                              \
 "uniform sampler2D u_texture_v;\n"                              \
 "varying vec4 v_color;\n"                                       \
+"#ifdef GL_FRAGMENT_PRECISION_HIGH\n"                           \
+"varying highp vec2 v_texCoord;\n"                              \
+"#else\n"                                                       \
 "varying vec2 v_texCoord;\n"                                    \
+"#endif\n"                                                      \
 "\n"                                                            \
 
 #define YUV_SHADER_BODY                                         \
@@ -299,14 +321,19 @@ static const Uint8 GLES2_Fragment_TextureNV21BT709[] = \
         BT709_SHADER_CONSTANTS \
         NV21_SHADER_BODY \
 ;
+#endif
 
 /* Custom Android video format texture */
 static const Uint8 GLES2_Fragment_TextureExternalOES[] = " \
     #extension GL_OES_EGL_image_external : require\n\
     precision mediump float; \
     uniform samplerExternalOES u_texture; \
-    varying vec4 v_color; \
-    varying vec2 v_texCoord; \
+    varying vec4 v_color;\n\
+    #ifdef GL_FRAGMENT_PRECISION_HIGH\n\
+    varying highp vec2 v_texCoord;\n\
+    #else\n\
+    varying vec2 v_texCoord;\n\
+    #endif\n\
     \
     void main() \
     { \
@@ -335,6 +362,7 @@ const Uint8 *GLES2_GetShader(GLES2_ShaderType type)
         return GLES2_Fragment_TextureRGB;
     case GLES2_SHADER_FRAGMENT_TEXTURE_BGR:
         return GLES2_Fragment_TextureBGR;
+#if SDL_HAVE_YUV
     case GLES2_SHADER_FRAGMENT_TEXTURE_YUV_JPEG:
         return GLES2_Fragment_TextureYUVJPEG;
     case GLES2_SHADER_FRAGMENT_TEXTURE_YUV_BT601:
@@ -357,6 +385,7 @@ const Uint8 *GLES2_GetShader(GLES2_ShaderType type)
         return GLES2_Fragment_TextureNV21BT601;
     case GLES2_SHADER_FRAGMENT_TEXTURE_NV21_BT709:
         return GLES2_Fragment_TextureNV21BT709;
+#endif
     case GLES2_SHADER_FRAGMENT_TEXTURE_EXTERNAL_OES:
         return GLES2_Fragment_TextureExternalOES;
     default:
