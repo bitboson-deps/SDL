@@ -25,10 +25,3 @@ darwin:
 	cp ./build-darwin/arm64/build/.libs/darwin-arm64.tar.gz .higgs-boson/
 	cp ./build-darwin/x64/build/.libs/darwin-x64.tar.gz .higgs-boson/
 	cp ./build-darwin/build/.libs/darwin-x86.tar.gz .higgs-boson/
-
-merge_from_main:
-	git checkout main
-	git pull origin main
-	git checkout higgs-boson
-	git merge main
-	find .github/ ! -name release.yml -delete
