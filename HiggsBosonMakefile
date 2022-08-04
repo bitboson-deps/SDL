@@ -1,0 +1,27 @@
+# Build the Linux (x86) Target
+linux_x86:
+	mkdir -p build-linux
+	cd build-linux/ && ../configure
+	cd build-linux/ && make
+	cp -r ./build-linux/include ./build-linux/build/.libs/
+	cd ./build-linux/build/.libs/ && tar -zcvf linux-x86.tar.gz libSDL*.so libSDL*.so.* include/
+	cp ./build-linux/build/.libs/linux-x86.tar.gz .higgs-boson/
+
+# Build the MacOS Targets
+darwin:
+	rm -rf build-darwin
+	mkdir -p build-darwin
+	cd build-darwin/ && CC=../build-scripts/clang-fat.sh ../configure
+	cd build-darwin/ && make
+	cp -r ./build-darwin/include ./build-darwin/arm64/build/.libs/
+	cp -r ./build-darwin/include ./build-darwin/x64/build/.libs/
+	cp -r ./build-darwin/include ./build-darwin/build/.libs/
+	cp -r ./include ./build-darwin/arm64/build/.libs/
+	cp -r ./include ./build-darwin/x64/build/.libs/
+	cp -r ./include ./build-darwin/build/.libs/
+	cd ./build-darwin/arm64/build/.libs/ && tar -zcvf darwin-arm64.tar.gz libSDL*.dylib include/
+	cd ./build-darwin/x64/build/.libs/ && tar -zcvf darwin-x64.tar.gz libSDL*.dylib include/
+	cd ./build-darwin/build/.libs/ && tar -zcvf darwin-x86.tar.gz libSDL*.dylib include/
+	cp ./build-darwin/arm64/build/.libs/darwin-arm64.tar.gz .higgs-boson/
+	cp ./build-darwin/x64/build/.libs/darwin-x64.tar.gz .higgs-boson/
+	cp ./build-darwin/build/.libs/darwin-x86.tar.gz .higgs-boson/
