@@ -132,7 +132,7 @@ jobs:
       - name: Download arm64 MacOS Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: macos-arm64
+          name: darwin-arm64
           path: ./
       - name: Upload darwin-arm64 Release Artifacts
         uses: actions/upload-release-asset@v1
@@ -148,7 +148,7 @@ jobs:
       - name: Download x64 MacOS Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: macos-x64
+          name: darwin-x64
           path: ./
       - name: Upload darwin-x64 Release Artifacts
         uses: actions/upload-release-asset@v1
@@ -164,7 +164,7 @@ jobs:
       - name: Download x86 MacOS Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: macos-x86
+          name: darwin-x86
           path: ./
       - name: Upload darwin-x86 Release Artifacts
         uses: actions/upload-release-asset@v1
